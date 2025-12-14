@@ -9,7 +9,7 @@ const SUPABASE_URL = 'https://kxdykwutrkdxnrbzhtnj.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4ZHlrd3V0cmtkeG5yYnpodG5qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU2MjUyNTcsImV4cCI6MjA4MTIwMTI1N30.KYmFMU7k7IdzCIeMtF6tG9eUtsLv6gEP5CO5SG3wM58';
 
 // App Version - Update this when releasing new version
-const APP_VERSION = '1.2.0';
+const APP_VERSION = '1.3.0';
 // GitHub raw URL for version check
 const VERSION_CHECK_URL = 'https://raw.githubusercontent.com/tushar12120/CalcuLTOR/main/version.json';
 
@@ -608,15 +608,65 @@ class PaymentCalculator {
         localStorage.setItem('calcultor-transactions', JSON.stringify(this.transactions));
     }
 
+    // === Fetch Transactions from Supabase ===
+
+    async fetchTransactionsFromSupabase() {
+        try {
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/transactions?order=created_at.desc&limit=100`, {
+                method: 'GET',
+                headers: {
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                // Convert Supabase format to local format
+                this.transactions = data.map(t => ({
+                    id: t.id,
+                    type: t.payment_type,
+                    amount: parseFloat(t.amount),
+                    received: t.received_amount ? parseFloat(t.received_amount) : null,
+                    change: t.change_amount ? parseFloat(t.change_amount) : null,
+                    timestamp: t.created_at
+                }));
+                console.log('Fetched', this.transactions.length, 'transactions from Supabase');
+                return true;
+            } else {
+                console.log('Supabase fetch failed:', response.status);
+                return false;
+            }
+        } catch (error) {
+            console.log('Supabase fetch error:', error);
+            return false;
+        }
+    }
+
     // === Transaction History Functions ===
 
-    openHistory() {
+    async openHistory() {
+        // Show loading in modal
+        this.historyModal.classList.add('active');
+        const historyList = document.getElementById('historyList');
+        historyList.innerHTML = '<p class="no-history">Loading from cloud...</p>';
+
+        // Try to fetch from Supabase first
+        const success = await this.fetchTransactionsFromSupabase();
+
+        if (!success) {
+            // Fallback to localStorage
+            console.log('Using localStorage data');
+            this.transactions = JSON.parse(localStorage.getItem('calcultor-transactions')) || [];
+        }
+
         // Set to today's date by default
         this.selectedDate = new Date();
         this.updateDateDisplay();
         this.renderHistory();
-        this.historyModal.classList.add('active');
     }
+
 
     closeHistory() {
         this.historyModal.classList.remove('active');
