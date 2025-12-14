@@ -1050,23 +1050,8 @@ body {
     transform: translateY(-2px);
 }
 
-.clear-history-btn {
-    flex: 1;
-    padding: 12px;
-    border: none;
-    border-radius: var(--border-radius-sm);
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-    color: white;
-    font-family: 'Outfit', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all var(--transition-normal);
-}
-
-.clear-history-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+.today-btn.full-width {
+    width: 100%;
 }
 
 /* Update Modal */
