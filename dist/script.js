@@ -9,7 +9,7 @@ const SUPABASE_URL = 'https://kxdykwutrkdxnrbzhtnj.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4ZHlrd3V0cmtkeG5yYnpodG5qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU2MjUyNTcsImV4cCI6MjA4MTIwMTI1N30.KYmFMU7k7IdzCIeMtF6tG9eUtsLv6gEP5CO5SG3wM58';
 
 // App Version - Update this when releasing new version
-const APP_VERSION = '1.3.0';
+const APP_VERSION = '1.3.1';
 // GitHub raw URL for version check
 const VERSION_CHECK_URL = 'https://raw.githubusercontent.com/tushar12120/CalcuLTOR/main/version.json';
 
