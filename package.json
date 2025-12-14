@@ -1,0 +1,27 @@
+{
+    "name": "calcultor",
+    "version": "1.0.0",
+    "description": "A beautiful, modern calculator app for Android",
+    "main": "index.html",
+    "scripts": {
+        "build": "echo 'No build step needed'",
+        "cap:init": "npx cap init CalcuLTOR com.calcultor.app --web-dir .",
+        "cap:add:android": "npx cap add android",
+        "cap:sync": "npx cap sync",
+        "cap:open:android": "npx cap open android"
+    },
+    "keywords": [
+        "calculator",
+        "android",
+        "app"
+    ],
+    "author": "TK",
+    "license": "MIT",
+    "dependencies": {
+        "@capacitor/android": "^6.0.0",
+        "@capacitor/core": "^6.0.0"
+    },
+    "devDependencies": {
+        "@capacitor/cli": "^6.0.0"
+    }
+}

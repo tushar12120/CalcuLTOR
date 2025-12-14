@@ -1,0 +1,21 @@
+{
+    "appId": "com.calcultor.app",
+    "appName": "CalcuLTOR",
+    "webDir": "dist",
+    "server": {
+        "androidScheme": "https"
+    },
+    "plugins": {
+        "SplashScreen": {
+            "launchShowDuration": 2000,
+            "backgroundColor": "#0f0f23",
+            "showSpinner": false,
+            "androidSpinnerStyle": "small",
+            "spinnerColor": "#667eea"
+        },
+        "StatusBar": {
+            "style": "Dark",
+            "backgroundColor": "#0f0f23"
+        }
+    }
+}

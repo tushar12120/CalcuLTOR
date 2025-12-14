@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Billing Calculator with UPI Payment Collection">
+    <link rel="manifest" href="manifest.json">
+    <title>CalcuLTOR - Payment Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="background-animation">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <div class="calculator-container">
+        <header class="calc-header">
+            <h1 class="logo">Calcu<span>LTOR</span></h1>
+            <div class="header-buttons">
+                <button class="header-btn" id="historyBtn" aria-label="Transaction History">
+                    📋
+                </button>
+                <button class="header-btn" id="settingsBtn" aria-label="Settings">
+                    ⚙️
+                </button>
+            </div>
+        </header>
+
+        <div class="calculator">
+            <!-- Display Section -->
+            <div class="display-section">
+                <div class="history" id="history"></div>
+                <div class="current-display">
+                    <span class="currency-symbol">₹</span>
+                    <span class="expression" id="expression"></span>
+                    <span class="result" id="result">0</span>
+                </div>
+            </div>
+
+            <!-- Main Calculator Buttons -->
+            <div class="button-pad">
+                <button class="calc-btn clear" data-action="clear">AC</button>
+                <button class="calc-btn function" data-action="plusMinus">±</button>
+                <button class="calc-btn function" data-action="percent">%</button>
+                <button class="calc-btn operator" data-action="divide">÷</button>
+
+                <button class="calc-btn number" data-value="7">7</button>
+                <button class="calc-btn number" data-value="8">8</button>
+                <button class="calc-btn number" data-value="9">9</button>
+                <button class="calc-btn operator" data-action="multiply">×</button>
+
+                <button class="calc-btn number" data-value="4">4</button>
+                <button class="calc-btn number" data-value="5">5</button>
+                <button class="calc-btn number" data-value="6">6</button>
+                <button class="calc-btn operator" data-action="subtract">−</button>
+
+                <button class="calc-btn number" data-value="1">1</button>
+                <button class="calc-btn number" data-value="2">2</button>
+                <button class="calc-btn number" data-value="3">3</button>
+                <button class="calc-btn operator" data-action="add">+</button>
+
+                <button class="calc-btn number zero" data-value="0">0</button>
+                <button class="calc-btn number" data-value=".">.</button>
+                <button class="calc-btn backspace" data-action="backspace">⌫</button>
+                <button class="calc-btn equals" data-action="equals">=</button>
+            </div>
+
+            <!-- Payment Buttons -->
+            <div class="payment-section">
+                <button class="payment-btn cash-btn" id="cashBtn">
+                    <span class="payment-icon">💵</span>
+                    <span class="payment-text">Cash</span>
+                </button>
+                <button class="payment-btn upi-btn" id="upiBtn">
+                    <span class="payment-icon">📱</span>
+                    <span class="payment-text">UPI</span>
+                </button>
+            </div>
+        </div>
+
+        <footer class="calc-footer">
+            <p>Made with ❤️ by TK</p>
+        </footer>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>⚙️ Settings</h2>
+                <button class="modal-close" id="closeSettings">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="upiId">Your UPI ID</label>
+                    <input type="text" id="upiId" placeholder="yourname@paytm" autocomplete="off">
+                    <small>Example: 9876543210@ybl, name@oksbi, name@paytm</small>
+                </div>
+                <div class="form-group">
+                    <label for="merchantName">Business/Your Name</label>
+                    <input type="text" id="merchantName" placeholder="My Shop" autocomplete="off">
+                </div>
+                <div class="form-group theme-toggle-group">
+                    <label>Theme</label>
+                    <div class="theme-switch">
+                        <button class="theme-option active" data-theme="dark">🌙 Dark</button>
+                        <button class="theme-option" data-theme="light">☀️ Light</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="save-btn" id="saveSettings">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Code Modal -->
+    <div class="modal-overlay" id="qrModal">
+        <div class="modal qr-modal">
+            <div class="modal-header">
+                <h2>📱 Scan to Pay</h2>
+                <button class="modal-close" id="closeQr">✕</button>
+            </div>
+            <div class="modal-body qr-body">
+                <div class="qr-amount">
+                    <span class="qr-amount-label">Amount</span>
+                    <span class="qr-amount-value" id="qrAmount">₹0</span>
+                </div>
+                <div class="qr-container" id="qrContainer">
+                    <!-- QR Code will be generated here -->
+                </div>
+                <p class="qr-instruction">Scan with GPay, PhonePe, Paytm or any UPI app</p>
+                <div class="upi-apps">
+                    <span class="upi-app">GPay</span>
+                    <span class="upi-app">PhonePe</span>
+                    <span class="upi-app">Paytm</span>
+                    <span class="upi-app">BHIM</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="done-btn" id="paymentDone">✓ Payment Received</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cash Payment Modal -->
+    <div class="modal-overlay" id="cashModal">
+        <div class="modal cash-modal">
+            <div class="modal-header">
+                <h2>💵 Cash Payment</h2>
+                <button class="modal-close" id="closeCash">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="cash-amount">
+                    <span class="cash-label">Total Amount</span>
+                    <span class="cash-value" id="cashAmount">₹0</span>
+                </div>
+                <div class="cash-received-section">
+                    <label for="cashReceived">Cash Received</label>
+                    <div class="cash-input-wrapper">
+                        <span class="input-currency">₹</span>
+                        <input type="number" id="cashReceived" placeholder="0" min="0">
+                    </div>
+                </div>
+                <div class="change-section" id="changeSection">
+                    <span class="change-label">Return Change</span>
+                    <span class="change-value" id="changeAmount">₹0</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="done-btn" id="cashDone">✓ Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction History Modal -->
+    <div class="modal-overlay" id="historyModal">
+        <div class="modal history-modal">
+            <div class="modal-header">
+                <h2>📋 Transaction History</h2>
+                <button class="modal-close" id="closeHistory">✕</button>
+            </div>
+            <div class="modal-body history-body">
+                <!-- Date Selector -->
+                <div class="date-selector">
+                    <button class="date-nav-btn" id="prevDate">◀</button>
+                    <div class="date-picker-wrapper">
+                        <input type="date" id="historyDate" class="date-input">
+                        <span class="date-display" id="dateDisplay">Today</span>
+                    </div>
+                    <button class="date-nav-btn" id="nextDate">▶</button>
+                </div>
+
+                <!-- Daily Summary -->
+                <div class="history-summary">
+                    <div class="summary-item">
+                        <span class="summary-label" id="summaryDateLabel">Today's Total</span>
+                        <span class="summary-value" id="todayTotal">₹0</span>
+                    </div>
+                    <div class="summary-item cash-summary">
+                        <span class="summary-label">💵 Cash</span>
+                        <span class="summary-value" id="cashTotal">₹0</span>
+                    </div>
+                    <div class="summary-item upi-summary">
+                        <span class="summary-label">📱 UPI</span>
+                        <span class="summary-value" id="upiTotal">₹0</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Transactions</span>
+                        <span class="summary-value" id="totalCount">0</span>
+                    </div>
+                </div>
+
+                <!-- Transaction List -->
+                <div class="history-list" id="historyList">
+                    <p class="no-history">No transactions yet</p>
+                </div>
+            </div>
+            <div class="modal-footer history-footer">
+                <button class="today-btn" id="goToday">📅 Today</button>
+                <button class="clear-history-btn" id="clearHistory">🗑️ Clear All</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Available Modal -->
+    <div class="modal-overlay" id="updateModal">
+        <div class="modal update-modal">
+            <div class="modal-header update-header">
+                <h2>🚀 Update Available!</h2>
+            </div>
+            <div class="modal-body update-body">
+                <div class="update-version">
+                    <span class="current-version">Current: v<span id="currentVersion">1.0.0</span></span>
+                    <span class="arrow">→</span>
+                    <span class="new-version">New: v<span id="newVersion">1.0.0</span></span>
+                </div>
+                <div class="release-notes">
+                    <h3>What's New:</h3>
+                    <p id="releaseNotes">Bug fixes and improvements</p>
+                </div>
+            </div>
+            <div class="modal-footer update-footer">
+                <button class="later-btn" id="updateLater">Later</button>
+                <button class="download-btn" id="updateNow">⬇️ Download Update</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
