@@ -9,7 +9,7 @@ const SUPABASE_URL = 'https://kxdykwutrkdxnrbzhtnj.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4ZHlrd3V0cmtkeG5yYnpodG5qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU2MjUyNTcsImV4cCI6MjA4MTIwMTI1N30.KYmFMU7k7IdzCIeMtF6tG9eUtsLv6gEP5CO5SG3wM58';
 
 // App Version - Update this when releasing new version
-const APP_VERSION = '1.0.0';
+const APP_VERSION = '1.1.0';
 // GitHub raw URL for version check
 const VERSION_CHECK_URL = 'https://raw.githubusercontent.com/tushar12120/CalcuLTOR/main/version.json';
 
@@ -385,10 +385,15 @@ class PaymentCalculator {
         // Record transaction to Supabase
         this.recordTransaction('CASH', amount, received, change);
 
+        // Play success sound
+        this.playPaymentSound();
+
         this.closeCashModal();
         this.clear();
 
         // Show success feedback
+        this.showPaymentSuccess('CASH', amount);
+
         if ('vibrate' in navigator) {
             navigator.vibrate([100, 50, 100]);
         }
@@ -470,10 +475,15 @@ class PaymentCalculator {
         // Record UPI transaction to Supabase
         this.recordTransaction('UPI', amount, amount, 0);
 
+        // Play success sound
+        this.playPaymentSound();
+
         this.closeQrModal();
         this.clear();
 
         // Show success feedback
+        this.showPaymentSuccess('UPI', amount);
+
         if ('vibrate' in navigator) {
             navigator.vibrate([100, 50, 100]);
         }
@@ -481,6 +491,65 @@ class PaymentCalculator {
 
     closeQrModal() {
         this.qrModal.classList.remove('active');
+    }
+
+    // === Payment Sound & Success Feedback ===
+
+    playPaymentSound() {
+        try {
+            // Create audio context for generating sound
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+            // Create a pleasant "cha-ching" success sound
+            const playTone = (frequency, startTime, duration) => {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                oscillator.frequency.value = frequency;
+                oscillator.type = 'sine';
+
+                gainNode.gain.setValueAtTime(0.3, startTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+
+                oscillator.start(startTime);
+                oscillator.stop(startTime + duration);
+            };
+
+            const now = audioContext.currentTime;
+
+            // Play ascending tones for success feeling
+            playTone(523.25, now, 0.15);        // C5
+            playTone(659.25, now + 0.1, 0.15);  // E5
+            playTone(783.99, now + 0.2, 0.2);   // G5
+
+            console.log('Payment sound played');
+        } catch (error) {
+            console.log('Audio not supported:', error);
+        }
+    }
+
+    showPaymentSuccess(type, amount) {
+        // Create success toast notification
+        const toast = document.createElement('div');
+        toast.className = 'payment-success-toast';
+        toast.innerHTML = `
+            <span class="toast-icon">${type === 'CASH' ? '💵' : '📱'}</span>
+            <span class="toast-text">₹${this.formatWithCommas(amount.toFixed(2))} received!</span>
+        `;
+
+        document.body.appendChild(toast);
+
+        // Animate in
+        setTimeout(() => toast.classList.add('show'), 10);
+
+        // Remove after 2 seconds
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 2000);
     }
 
     // === Supabase Transaction Recording ===
