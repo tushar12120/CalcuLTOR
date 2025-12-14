@@ -3,6 +3,6 @@
     "versionCode": 2,
     "releaseDate": "2024-12-14",
     "releaseNotes": "🔊 Payment Success Sound, 📱 Success Toast Notification, 📴 Full Offline Mode Support, 📋 PhonePe-style Transaction History with Date Filter",
-    "downloadUrl": "https://github.com/tushar12120/CalcuLTOR/releases/latest/download/CalcuLTOR.apk",
+    "downloadUrl": "https://github.com/tushar12120/CalcuLTOR/CalcuLTOR.apk",
     "minVersion": "1.0.0"
 }
