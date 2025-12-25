@@ -4,7 +4,7 @@
  * Version 2.0 - Improved caching for complete offline support
  */
 
-const CACHE_NAME = 'calcultor-v2';
+const CACHE_NAME = 'calcultor-v2.1';
 const ASSETS_TO_CACHE = [
     '/',
     '/index.html',
